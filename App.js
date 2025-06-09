@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import { database } from "./database.js";
 import initModels from "./models/initModels.js";
-import authRoutes from "./routes/authRoutes.js";
+import authRoutes from "./routes/auth.js";
 import usuarioRoutes from "./routes/usuario.js";
 import veiculoRoutes from "./routes/veiculo.js";
-
+import relatorioRoutes from './routes/relatorio.js';
 const app = express();
 
 // Middleware
@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use('/relatorio', relatorioRoutes);
 app.use('/auth', authRoutes);
 app.use('/usuario', usuarioRoutes);
 app.use('/veiculo', veiculoRoutes);
