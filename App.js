@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import { database } from "./database.js";
 import initModels from "./models/initModels.js";
-import authRoutes from "./routes/auth.js";
+import authRoutes from "./routes/authRoutes.js";
 import usuarioRoutes from "./routes/usuario.js";
 import veiculoRoutes from "./routes/veiculo.js";
 

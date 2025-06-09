@@ -1,18 +1,23 @@
 import Usuario from "../models/usuario.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
 export const login = async (req, res) => {
-    const { cpf, senha } = req.body;
+    const { identifier, senha } = req.body;
 
-    if (!cpf || !senha) {
-        return res.status(400).json({ mensagem: 'CPF e senha são obrigatórios' });
+    if (!identifier || !senha) {
+        return res.status(400).json({ mensagem: 'Identificador (nome ou CPF) e senha são obrigatórios' });
     }
     try {
-        const usuario = await Usuario.findOne({ where: { cpf } });
+        const usuario = await Usuario.findOne({
+            where: {
+                [Op.or]: [{ cpf: identifier }, { nome: identifier }]
+            }
+        });
+
         if (!usuario) {
             return res.status(401).json({ mensagem: 'Usuário ou senha incorretos' });
         }
+
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
         if (!senhaValida) {

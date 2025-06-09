@@ -25,13 +25,5 @@ export const Veiculo = database.define('veiculo', {
     tableName: 'veiculo',
     timestamps: false,
 });
-Veiculo.belongsTo(Usuario, {
-    foreignKey: 'dono_id',
-    as: 'dono'
-});
-Usuario.hasMany(Veiculo, {
-    foreignKey: 'dono_id',
-    as: 'veiculos'
-});
 console.log(Veiculo)
 export default Veiculo;
