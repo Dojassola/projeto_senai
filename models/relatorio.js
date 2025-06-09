@@ -1,7 +1,5 @@
 import { database } from "../database.js";
 import { DataTypes } from "sequelize";
-import Veiculo from "./veiculo.js";
-
 export const Relatorio = database.define('relatorio', {
     id: {
         type: DataTypes.INTEGER,
