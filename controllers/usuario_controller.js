@@ -1,6 +1,6 @@
 import Usuario from "../models/usuario";
 
-export const getUsuarios = async (req, res) => {
+export const listUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll();
         res.status(200).json(usuarios);
@@ -9,7 +9,7 @@ export const getUsuarios = async (req, res) => {
     }
 }
 
-export const getUsuarioById = async (req, res) => {
+export const searchUsuario = async (req, res) => {
     const { id } = req.params;
     try {
         const usuario = await Usuario.findByPk(id);
@@ -63,8 +63,8 @@ export const deleteUsuario = async (req, res) => {
 }
 
 export default {
-    getUsuarios,
-    getUsuarioById,
+    listUsuarios,
+    searchUsuario,
     createUsuario,
     updateUsuario,
     deleteUsuario
