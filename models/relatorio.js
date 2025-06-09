@@ -1,6 +1,6 @@
-import { database } from "../database";
+import { database } from "../database.js";
 import { DataTypes } from "sequelize";
-import Veiculo from "./veiculo";
+import Veiculo from "./veiculo.js";
 
 export const Relatorio = database.define('relatorio', {
     id: {

@@ -1,4 +1,4 @@
-import usuario_controller from "../controllers/usuario_controller";
+import usuario_controller from "../controllers/usuario_controller.js";
 import { Router } from "express";
 const router = Router();
 // rotas para o usuario
