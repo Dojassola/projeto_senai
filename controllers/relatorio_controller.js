@@ -1,6 +1,7 @@
 import Relatorio from '../models/relatorio.js';
 import Veiculo from '../models/veiculo.js';
 import { database } from "../database.js";
+
 export const criarEntrada = async (req, res) => {
     const { veiculo_id } = req.body;
     const transaction = await database.transaction();

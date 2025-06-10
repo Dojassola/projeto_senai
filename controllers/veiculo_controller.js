@@ -114,7 +114,6 @@ export const deleteVeiculo = async (req, res) => {
             return res.status(404).json({ message: 'Veículo não encontrado' });
         }
 
-        // Delete associated records
         await UsuarioVeiculo.destroy({
             where: { veiculo_id: id },
             transaction
