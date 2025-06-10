@@ -1,7 +1,6 @@
 import { Router } from "express";
 import veiculo_controller from "../controllers/veiculo_controller.js";
 import { verifyToken, authorizeRoles } from "../middlewares/auth.js";
-
 const router = Router();
 
 router.use(verifyToken);

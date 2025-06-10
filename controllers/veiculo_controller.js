@@ -1,6 +1,8 @@
 import Veiculo from "../models/veiculo.js";
 import Usuario from "../models/usuario.js";
-
+import UsuarioVeiculo from "../models/usuarioveiculo.js";
+import Relatorio from "../models/relatorio.js";
+import { database } from "../database.js";
 export const listVeiculos = async (req, res) => {
     try {
         const veiculos = await Veiculo.findAll({
@@ -34,10 +36,29 @@ export const searchVeiculo = async (req, res) => {
 };
 
 export const createVeiculo = async (req, res) => {
-    const { placa, dono_id } = req.body;
+    const { placa, usuarios } = req.body;
     try {
-        const novoVeiculo = await Veiculo.create({ placa, dono_id });
-        res.status(201).json(novoVeiculo);
+        const veiculo = await Veiculo.create({ placa });
+        
+        if (usuarios && usuarios.length > 0) {
+            await Promise.all(usuarios.map(user => 
+                UsuarioVeiculo.create({
+                    usuario_id: user.id,
+                    veiculo_id: veiculo.id,
+                    tipo_relacao: user.tipo
+                })
+            ));
+        }
+
+        const veiculoComUsuarios = await Veiculo.findByPk(veiculo.id, {
+            include: [{
+                model: Usuario,
+                as: 'usuarios',
+                through: { attributes: ['tipo_relacao'] }
+            }]
+        });
+
+        res.status(201).json(veiculoComUsuarios);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao criar veículo', error });
     }
@@ -45,16 +66,39 @@ export const createVeiculo = async (req, res) => {
 
 export const updateVeiculo = async (req, res) => {
     const { id } = req.params;
-    const { placa, dono_id } = req.body;
+    const { placa, usuarios } = req.body;
     try {
         const veiculo = await Veiculo.findByPk(id);
         if (!veiculo) {
             return res.status(404).json({ message: 'Veículo não encontrado' });
         }
+
         veiculo.placa = placa;
-        veiculo.dono_id = dono_id;
         await veiculo.save();
-        res.status(200).json(veiculo);
+
+        if (usuarios && usuarios.length > 0) {
+            await UsuarioVeiculo.destroy({
+                where: { veiculo_id: id }
+            });
+
+            await Promise.all(usuarios.map(user => 
+                UsuarioVeiculo.create({
+                    usuario_id: user.id,
+                    veiculo_id: id,
+                    tipo_relacao: user.tipo
+                })
+            ));
+        }
+
+        const veiculoAtualizado = await Veiculo.findByPk(id, {
+            include: [{
+                model: Usuario,
+                as: 'usuarios',
+                through: { attributes: ['tipo_relacao'] }
+            }]
+        });
+
+        res.status(200).json(veiculoAtualizado);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao atualizar veículo', error });
     }
@@ -62,18 +106,38 @@ export const updateVeiculo = async (req, res) => {
 
 export const deleteVeiculo = async (req, res) => {
     const { id } = req.params;
+    const transaction = await database.transaction();
+
     try {
         const veiculo = await Veiculo.findByPk(id);
         if (!veiculo) {
             return res.status(404).json({ message: 'Veículo não encontrado' });
         }
-        await veiculo.destroy();
+
+        // Delete associated records
+        await UsuarioVeiculo.destroy({
+            where: { veiculo_id: id },
+            transaction
+        });
+
+        await Relatorio.destroy({
+            where: { veiculo_id: id },
+            transaction
+        });
+
+        await veiculo.destroy({ transaction });
+        
+        await transaction.commit();
         res.status(204).send();
     } catch (error) {
-        res.status(500).json({ message: 'Erro ao deletar veículo', error });
+        await transaction.rollback();
+        console.error('Erro ao deletar veículo:', error);
+        res.status(500).json({ 
+            message: 'Erro ao deletar veículo e seus relacionamentos', 
+            error 
+        });
     }
 };
-
 export default {
     listVeiculos,
     searchVeiculo,

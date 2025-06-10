@@ -1,17 +1,19 @@
 import Usuario from './usuario.js';
 import Veiculo from './veiculo.js';
 import Relatorio from './relatorio.js';
-
+import UsuarioVeiculo from './usuarioveiculo.js';
 const initModels = () => {
-  Usuario.hasMany(Veiculo, {
-    foreignKey: 'dono_id',
-    as: 'veiculosDoUsuario'
-  });
-  
-  Veiculo.belongsTo(Usuario, {
-    foreignKey: 'dono_id',
-    as: 'dono'
-  });
+  Usuario.belongsToMany(Veiculo, {
+    through: UsuarioVeiculo,
+    foreignKey: 'usuario_id',
+    as: 'veiculos'
+});
+
+Veiculo.belongsToMany(Usuario, {
+    through: UsuarioVeiculo,
+    foreignKey: 'veiculo_id',
+    as: 'usuarios'
+});
 
   Veiculo.hasMany(Relatorio, {
     foreignKey: 'veiculo_id',
