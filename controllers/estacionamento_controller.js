@@ -1,4 +1,4 @@
-import Estacionamento from "../models/estacionamento";
+import Estacionamento from "../models/estacionamento.js";
 
 export const listEstacionamentos = async (req, res) => {
     try {
@@ -49,6 +49,5 @@ export default {
     listEstacionamentos,
     getVagasDisponiveis,
     searchEstacionamento,
-    createEstacionamento,
-    checkVagasPublic
+    createEstacionamento
 };

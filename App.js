@@ -7,6 +7,7 @@ import usuarioRoutes from "./routes/usuario.js";
 import veiculoRoutes from "./routes/veiculo.js";
 import relatorioRoutes from './routes/relatorio.js';
 import estacionamentoRoutes from './routes/estacionamento.js';
+import Estacionamento from './models/estacionamento.js';
 const app = express();
 
 // Middleware
@@ -29,7 +30,7 @@ try {
     const estacionamento = await Estacionamento.findOne();
     if (!estacionamento) {
         await Estacionamento.create({
-            total_vagas: 50,  // Set your default capacity
+            vagas: 50,  // Set your default capacity
             vagas_ocupadas: 0
         });
         console.log("Estacionamento inicializado");
