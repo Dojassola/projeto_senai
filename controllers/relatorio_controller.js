@@ -20,6 +20,25 @@ export const criarEntrada = async (req, res) => {
     }
 };
 
+export const criarEntradaPorPlaca = async (req, res) => {
+    const { placa } = req.body;
+    try {
+        const veiculo = await Veiculo.findOne({ where: { placa } });
+        if (!veiculo) {
+            return res.status(404).json({ message: 'Veículo não encontrado' });
+        }
+
+        const relatorio = await Relatorio.create({
+            veiculo_id: veiculo.id,
+            entrada: new Date(),
+        });
+
+        res.status(201).json(relatorio);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao registrar entrada por placa', error });
+    }
+};
+
 export const registrarSaida = async (req, res) => {
     const { id } = req.params;
     try {
@@ -54,5 +73,6 @@ export const listarRelatorios = async (req, res) => {
 export default {
     criarEntrada,
     registrarSaida,
-    listarRelatorios
+    listarRelatorios,
+    criarEntradaPorPlaca
 };
