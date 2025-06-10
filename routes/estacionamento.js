@@ -1,0 +1,14 @@
+import { Router } from "express";
+import * as estacionamento_controller from "../controllers/estacionamento_controller.js";
+import { verifyToken, authorizeRoles } from "../middlewares/auth.js";
+
+const router = Router();
+
+router.use(verifyToken);
+
+router.get("/", authorizeRoles('admin', 'funcionario'), estacionamento_controller.listEstacionamentos);
+router.get("/vagas/:id", authorizeRoles('admin', 'funcionario','aluno','professor'), estacionamento_controller.getVagasDisponiveis);
+router.get("/:id", authorizeRoles('admin', 'funcionario'), estacionamento_controller.searchEstacionamento);
+router.post("/", authorizeRoles('admin'), estacionamento_controller.createEstacionamento);
+
+export default router;

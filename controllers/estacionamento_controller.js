@@ -45,3 +45,10 @@ export const createEstacionamento = async (req, res) => {
         res.status(500).json({ message: 'Erro ao criar estacionamento', error });
     }
 };
+export default {
+    listEstacionamentos,
+    getVagasDisponiveis,
+    searchEstacionamento,
+    createEstacionamento,
+    checkVagasPublic
+};
