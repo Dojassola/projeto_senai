@@ -1,34 +1,27 @@
 import Veiculo from "../models/veiculo.js";
 import Usuario from "../models/usuario.js";
-import UsuarioVeiculo from "../models/usuarioveiculo.js";
 import Relatorio from "../models/relatorio.js";
 import { database } from "../database.js";
 export const listVeiculos = async (req, res) => {
     const { id, usuarioFuncao } = req;
-    console.log(id,usuarioFuncao);
-    const usuarioId = usuarioFuncao === 'admin' || usuarioFuncao === 'funcionario' ? id : null;
     try {
-        if (!usuarioId) {
-            const veiculos = await Veiculo.findAll({
-                include: [{
-                    model: Usuario,
-                    as: 'dono'
-                }]
-            });
-            res.status(200).json(veiculos);
+        let where = {};
+        if (usuarioFuncao !== 'admin' && usuarioFuncao !== 'funcionario') {
+            where = { dono_id: id };
         }
-        else{
-            const veiculos = await Veiculo.findAll({
-                include: [{
-                    model: Usuario,
-                    as: 'dono',
-                    where: { id: usuarioId }
-                }]
-            });
-            res.status(200).json(veiculos);
-        }
-    }
-    catch (error) {
+
+        const veiculos = await Veiculo.findAll({
+            where,
+            include: [{
+                model: Usuario,
+                as: 'dono',
+                attributes: ['id', 'nome', 'cpf'] // Limit exposed user data
+            }]
+        });
+        
+        res.status(200).json(veiculos);
+    } catch (error) {
+        console.error('Erro ao listar veículos:', error);
         res.status(500).json({ message: 'Erro ao buscar veículos', error });
     }
 };
@@ -50,39 +43,37 @@ export const searchVeiculo = async (req, res) => {
         res.status(500).json({ message: 'Erro ao buscar veículo', error });
     }
 };
-
 export const createVeiculo = async (req, res) => {
-    const { placa, usuarios } = req.body;
+    const { placa, donoId } = req.body;
     try {
-        const veiculo = await Veiculo.create({ placa });
-        
-        if (usuarios && usuarios.length > 0) {
-            await Promise.all(usuarios.map(user => 
-                UsuarioVeiculo.create({
-                    usuario_id: user.id,
-                    veiculo_id: veiculo.id,
-                    tipo_relacao: user.tipo
-                })
-            ));
+        if (!placa || !donoId) {
+            return res.status(400).json({ message: 'Placa e dono_id são obrigatórios' });
+        }
+        const dono = await Usuario.findByPk(donoId);
+        if (!dono) {
+            return res.status(404).json({ message: 'Dono não encontrado' });
         }
 
-        const veiculoComUsuarios = await Veiculo.findByPk(veiculo.id, {
+        const veiculo = await Veiculo.create({ placa, dono_id: donoId });
+
+        const veiculoComDono = await Veiculo.findByPk(veiculo.id, {
             include: [{
                 model: Usuario,
-                as: 'usuarios',
-                through: { attributes: ['tipo_relacao'] }
+                as: 'dono',
+                attributes: ['id', 'nome', 'cpf']
             }]
         });
 
-        res.status(201).json(veiculoComUsuarios);
+        res.status(201).json(veiculoComDono);
     } catch (error) {
+        console.error('Erro ao criar veículo:', error);
         res.status(500).json({ message: 'Erro ao criar veículo', error });
     }
 };
 
 export const updateVeiculo = async (req, res) => {
     const { id } = req.params;
-    const { placa, usuarios } = req.body;
+    const { placa } = req.body;
     try {
         const veiculo = await Veiculo.findByPk(id);
         if (!veiculo) {
@@ -92,30 +83,17 @@ export const updateVeiculo = async (req, res) => {
         veiculo.placa = placa;
         await veiculo.save();
 
-        if (usuarios && usuarios.length > 0) {
-            await UsuarioVeiculo.destroy({
-                where: { veiculo_id: id }
-            });
-
-            await Promise.all(usuarios.map(user => 
-                UsuarioVeiculo.create({
-                    usuario_id: user.id,
-                    veiculo_id: id,
-                    tipo_relacao: user.tipo
-                })
-            ));
-        }
-
         const veiculoAtualizado = await Veiculo.findByPk(id, {
             include: [{
                 model: Usuario,
-                as: 'usuarios',
-                through: { attributes: ['tipo_relacao'] }
+                as: 'dono',
+                attributes: ['id', 'nome', 'cpf']
             }]
         });
 
         res.status(200).json(veiculoAtualizado);
     } catch (error) {
+        console.error('Erro ao atualizar veículo:', error);
         res.status(500).json({ message: 'Erro ao atualizar veículo', error });
     }
 };

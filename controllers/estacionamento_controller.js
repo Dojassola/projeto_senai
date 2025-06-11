@@ -45,9 +45,30 @@ export const createEstacionamento = async (req, res) => {
         res.status(500).json({ message: 'Erro ao criar estacionamento', error });
     }
 };
+export const updateVagas = async (req, res) => {
+    const { id } = req.params;
+    const { total_vagas, vagas_ocupadas } = req.body;
+    try {
+        const estacionamento = await Estacionamento.findByPk(id);
+        if (!estacionamento) {
+            return res.status(404).json({ message: 'Estacionamento não encontrado' });
+        }
+        if (total_vagas !== undefined) {
+            estacionamento.total_vagas = total_vagas;
+        }
+        if (vagas_ocupadas !== undefined) {
+            estacionamento.vagas_ocupadas = vagas_ocupadas;
+        }
+        await estacionamento.save();
+        res.status(200).json(estacionamento);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar vagas', error });
+    }
+};
 export default {
     listEstacionamentos,
     getVagasDisponiveis,
     searchEstacionamento,
-    createEstacionamento
+    createEstacionamento,
+    updateVagas
 };
