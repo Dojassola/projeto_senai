@@ -6,7 +6,7 @@ const router = Router();
 
 router.use(verifyToken);
 
-router.get("/", authorizeRoles('admin', 'funcionario'), estacionamento_controller.listEstacionamentos);
+router.get("/", estacionamento_controller.listEstacionamentos);
 router.get("/vagas/:id", estacionamento_controller.getVagasDisponiveis);
 router.get("/:id", authorizeRoles('admin', 'funcionario'), estacionamento_controller.searchEstacionamento);
 router.post("/", authorizeRoles('admin'), estacionamento_controller.createEstacionamento);
