@@ -15,7 +15,7 @@ export const listVeiculos = async (req, res) => {
             include: [{
                 model: Usuario,
                 as: 'dono',
-                attributes: ['id', 'nome', 'cpf'] // Limit exposed user data
+                attributes: ['id', 'nome', 'cpf']
             }]
         });
         
