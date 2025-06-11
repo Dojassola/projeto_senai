@@ -11,14 +11,6 @@ export const Veiculo = database.define('veiculo', {
     placa: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    dono_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'usuario',
-          key: 'id'
-        }
     }
 }, {
     tableName: 'veiculo',
