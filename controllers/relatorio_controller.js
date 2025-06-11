@@ -25,8 +25,7 @@ export const criarEntrada = async (req, res) => {
             relatorio,
             estacionamento: {
                 vagas_totais: estacionamento.total_vagas,
-                vagas_ocupadas: estacionamento.vagas_ocupadas,
-                status: estacionamento.status
+                vagas_ocupadas: estacionamento.vagas_ocupadas
             }
         });
     } catch (error) {

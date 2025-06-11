@@ -30,7 +30,7 @@ try {
     const estacionamento = await Estacionamento.findOne();
     if (!estacionamento) {
         await Estacionamento.create({
-            vagas: 50,  // Set your default capacity
+            vagas: 50,
             vagas_ocupadas: 0
         });
         console.log("Estacionamento inicializado");
