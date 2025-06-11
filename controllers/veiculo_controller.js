@@ -4,15 +4,31 @@ import UsuarioVeiculo from "../models/usuarioveiculo.js";
 import Relatorio from "../models/relatorio.js";
 import { database } from "../database.js";
 export const listVeiculos = async (req, res) => {
+    const { id, usuarioFuncao } = req;
+    console.log(id,usuarioFuncao);
+    const usuarioId = usuarioFuncao === 'admin' || usuarioFuncao === 'funcionario' ? id : null;
     try {
-        const veiculos = await Veiculo.findAll({
-            include: [{
-                model: Usuario,
-                as: 'dono'
-            }]
-        });
-        res.status(200).json(veiculos);
-    } catch (error) {
+        if (!usuarioId) {
+            const veiculos = await Veiculo.findAll({
+                include: [{
+                    model: Usuario,
+                    as: 'dono'
+                }]
+            });
+            res.status(200).json(veiculos);
+        }
+        else{
+            const veiculos = await Veiculo.findAll({
+                include: [{
+                    model: Usuario,
+                    as: 'dono',
+                    where: { id: usuarioId }
+                }]
+            });
+            res.status(200).json(veiculos);
+        }
+    }
+    catch (error) {
         res.status(500).json({ message: 'Erro ao buscar veículos', error });
     }
 };

@@ -26,11 +26,6 @@ export const createUsuario = async (req, res) => {
     const { nome, cpf, senha, funcao } = req.body;
     
     try {
-        if (req.usuarioFuncao === 'funcionario' && funcao === 'admin') {
-            return res.status(403).json({ 
-                message: 'Funcionários só podem cadastrar alunos e professores' 
-            });
-        }
         if (req.usuarioFuncao === 'funcionario' && 
             !['aluno', 'professor'].includes(funcao)) {
             return res.status(403).json({ 

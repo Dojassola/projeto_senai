@@ -6,7 +6,7 @@ const router = Router();
 
 router.use(verifyToken);
 
-router.get("/", authorizeRoles('admin', 'funcionario'), veiculo_controller.listVeiculos);
+router.get("/", veiculo_controller.listVeiculos);
 router.get("/:id", authorizeRoles('admin', 'funcionario'), veiculo_controller.searchVeiculo);
 router.post("/",verificarVagas, authorizeRoles('admin'), veiculo_controller.createVeiculo);
 router.put("/:id", authorizeRoles('admin'), veiculo_controller.updateVeiculo);
