@@ -86,16 +86,37 @@ export const registrarSaida = async (req, res) => {
         res.status(500).json({ message: 'Erro ao registrar saída', error });
     }
 };
-
 export const listarRelatorios = async (req, res) => {
+    const usuarioId = req.id;
+    if (!usuarioId) {
+        return res.status(401).json({ message: 'Usuário não autenticado' });
+    }
     try {
+        const usuario = await Usuario.findByPk(usuarioId, {
+            include: [{
+                model: Veiculo,
+                as: 'veiculos',
+                attributes: ['id']
+            }]
+        });
+
+        if (!usuario) {
+            return res.status(404).json({ message: 'Usuário não encontrado' });
+        }
+
+        const veiculoIds = usuario.veiculos.map(veiculo => veiculo.id);
+
         const relatorios = await Relatorio.findAll({
+            where: {
+                veiculo_id: veiculoIds
+            },
             include: [{
                 model: Veiculo,
                 as: 'veiculo',
                 attributes: ['placa']
             }]
         });
+
         res.status(200).json(relatorios);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao listar relatórios', error });

@@ -1,5 +1,6 @@
 import Usuario from "../models/usuario.js";
 import bcrypt from "bcrypt";
+
 export const listUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll();
@@ -24,7 +25,7 @@ export const searchUsuario = async (req, res) => {
 
 export const createUsuario = async (req, res) => {
     const { nome, cpf, senha, funcao } = req.body;
-    
+
     try {
         if (req.usuarioFuncao === 'funcionario' && 
             !['aluno', 'professor'].includes(funcao)) {

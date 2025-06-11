@@ -6,7 +6,7 @@ const router = Router();
 
 router.use(verifyToken);
 
-router.get('/', authorizeRoles('admin', 'funcionario'), relatorio_controller.listarRelatorios);
+router.get('/', relatorio_controller.listarRelatorios);
 router.post('/entrada', authorizeRoles('funcionario', 'admin'),verificarVagas, relatorio_controller.criarEntrada);
 router.put('/saida/:id', authorizeRoles('funcionario', 'admin'), relatorio_controller.registrarSaida);
 
