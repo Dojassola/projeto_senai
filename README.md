@@ -37,7 +37,7 @@ Sistema desenvolvido para gerenciar o estacionamento do SENAI, permitindo o cont
 
 1. Clone o repositório:
 ```bash
-git clone [url-do-repositorio]
+git clone https://github.com/Dojassola/projeto_senai
 ```
 
 2. Instale as dependências:
