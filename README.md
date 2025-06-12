@@ -56,6 +56,16 @@ JWT_SECRET=seu_segredo_jwt
 npm start
 ```
 
+## 📚 Documentação da API
+Para uma lista completa de todos os endpoints, parâmetros necessários e níveis de acesso, consulte nossa [Documentação de API detalhada](docs/api-endpoints.md).
+
+### Endpoints Principais:
+- 🔐 Autenticação (`/auth`)
+- 👥 Usuários (`/usuario`)
+- 🚗 Veículos (`/veiculo`)
+- 📋 Relatórios (`/relatorio`)
+- 🅿️ Estacionamento (`/estacionamento`)
+
 ## 🔑 Rotas da API
 
 ### Autenticação
