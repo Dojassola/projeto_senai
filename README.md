@@ -83,9 +83,3 @@ npm start
 - **Admin**: Acesso total ao sistema
 - **Funcionário**: Gerenciamento de entradas/saídas
 - **Professor/Aluno**: Gerenciamento dos próprios veículos
-
-## 📋 Licença
-Este projeto está sob a licença ISC.
-
-## 👨‍💻 Autores
-[Seus nomes aqui]
