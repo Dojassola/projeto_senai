@@ -1,8 +1,7 @@
 import { Router } from "express";
 import veiculo_controller from "../controllers/veiculo_controller.js";
 import { verifyToken, authorizeRoles } from "../middlewares/auth.js";
-import { verificarVagas } from "../middlewares/verificarvagas.js";
-import { validateVeiculo } from "../middlewares/validate.js";
+import { validateVeiculo, verificarVagas } from "../middlewares/validate.js";
 const router = Router();
 
 router.use(verifyToken);
