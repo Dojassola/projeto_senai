@@ -7,7 +7,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "start": "node App.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
