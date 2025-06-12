@@ -1,6 +1,6 @@
 import Usuario from "../models/usuario.js";
 import bcrypt from "bcrypt";
-
+import { database } from "../database.js";
 export const listUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll();
@@ -35,7 +35,7 @@ export const createUsuario = async (req, res) => {
             message: 'Nome, CPF, senha e função são obrigatórios' 
         });
     }
-
+    const transaction = await database.transaction();
     try {
         if (req.usuarioFuncao === 'funcionario' && 
             !['aluno', 'professor'].includes(funcao)) {
@@ -57,7 +57,7 @@ export const createUsuario = async (req, res) => {
             senha: hashSenha,
             funcao
         });
-
+        transaction.commit();
         res.status(201).json({
             id: usuario.id,
             nome: usuario.nome,
@@ -65,6 +65,7 @@ export const createUsuario = async (req, res) => {
             funcao: usuario.funcao
         });
     } catch (error) {
+        await transaction.rollback();
         res.status(500).json({ message: 'Erro ao criar usuário', error });
     }
 };
@@ -72,7 +73,7 @@ export const createUsuario = async (req, res) => {
 export const updateUsuario = async (req, res) => {
     const { id } = req.params;
     const { nome, senha, cpf, funcao } = req.body;
-    
+    const transaction = await database.transaction();
     try {
         const usuario = await Usuario.findByPk(id);
         if (!usuario) {
@@ -111,7 +112,7 @@ export const updateUsuario = async (req, res) => {
         }
 
         await usuario.save();
-
+        transaction.commit();
         res.status(200).json({
             id: usuario.id,
             nome: usuario.nome,
@@ -119,6 +120,7 @@ export const updateUsuario = async (req, res) => {
             funcao: usuario.funcao
         });
     } catch (error) {
+        await transaction.rollback();
         res.status(500).json({ message: 'Erro ao atualizar usuário', error });
     }
 };

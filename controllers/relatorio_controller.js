@@ -23,8 +23,10 @@ export const criarEntrada = async (req, res) => {
         if (!estacionamento) {
             return res.status(404).json({ message: 'Estacionamento não configurado' });
         }
+        if (estacionamento.vagas_ocupadas >= estacionamento.total_vagas) {
+            return res.status(409).json({ message: 'Estacionamento lotado' });
+        }
 
-        // Check if the vehicle is already in the parking lot
         const relatorioAberto = await Relatorio.findOne({
             where: {
                 veiculo_id: veiculo.id,
@@ -79,6 +81,7 @@ export const criarEntradaPorPlaca = async (req, res) => {
 
 export const registrarSaida = async (req, res) => {
     const { id } = req.params;
+    const transaction = await database.transaction();
     try {
         const relatorio = await Relatorio.findByPk(id, {
             include: [{
@@ -99,13 +102,13 @@ export const registrarSaida = async (req, res) => {
         const tempoEstadia = new Date() - new Date(relatorio.entrada);
         relatorio.saida = new Date();
         await relatorio.save();
-
+        await transaction.commit();
         res.status(200).json({
             ...relatorio.toJSON(),
             tempoEstadia: `${Math.floor(tempoEstadia / (1000 * 60))} minutos`
         });
     } catch (error) {
-        console.error('Erro ao registrar saída:', error);
+        await transaction.rollback();
         res.status(500).json({ message: 'Erro ao registrar saída', error });
     }
 };
