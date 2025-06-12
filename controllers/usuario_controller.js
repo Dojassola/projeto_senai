@@ -5,7 +5,7 @@ import { database } from "../database.js";
 export const listUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll({
-            attributes: { exclude: ['senha'] } // Exclui a senha dos resultados
+            attributes: { exclude: ['senha'] }
         });
         res.status(200).json(usuarios);
     } catch (error) {

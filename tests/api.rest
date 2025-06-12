@@ -9,7 +9,8 @@ Content-Type: application/json
 }
 
 ### Token de autenticação
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZnVuY2FvIjoiYWRtaW4iLCJpYXQiOjE3NDk3Njg4MzYsImV4cCI6MTc0OTc3MjQzNn0.0ttlfnQ06j64-V_052DO9L1nFb51JUBZ21yureQtLlw
+@authToken = <o token>
+
 
 ### Registrar aluno
 POST http://localhost:3000/auth/cadastro

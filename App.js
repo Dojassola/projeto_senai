@@ -12,18 +12,15 @@ import authController from './controllers/authentication_controller.js';
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.use('/estacionamento', estacionamentoRoutes);
 app.use('/relatorio', relatorioRoutes);
 app.use('/auth', authRoutes);
 app.use('/usuario', usuarioRoutes);
 app.use('/veiculo', veiculoRoutes);
 
-// Initialize models and database
 initModels();
 
 try {
