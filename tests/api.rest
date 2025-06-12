@@ -3,10 +3,10 @@ POST http://localhost:3000/auth/cadastro
 Content-Type: application/json
 
 {
-    "nome": "Test User",
-    "cpf": "12345678902",
-    "senha": "password123",
-    "funcao": "funcionario"
+    "nome": "admin",
+    "cpf": "11111111111",
+    "senha": "admin",
+    "funcao": "admin"
 }
 
 ### Login
@@ -14,12 +14,12 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "cpf": "12345678902",
-    "senha": "password123"
+    "cpf": "11111111111",
+    "senha": "admin"
 }
 
 ### adicionar o token abaixo para facilitar uso
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZnVuY2FvIjoiZnVuY2lvbmFyaW8iLCJpYXQiOjE3NDk3NjA2MDgsImV4cCI6MTc0OTc2NDIwOH0.oQgZYbNsxyhk3jRba8RZQXTgup0zAHBj_BmDaI3uU-M
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZnVuY2FvIjoiYWRtaW4iLCJpYXQiOjE3NDk3NjQ1NjEsImV4cCI6MTc0OTc2ODE2MX0.rdK0D6GqL-ApcvfDzwR7DaBzh1Y7mBkgJce_XgDzjk8
 
 ### Criar um veiculo novo para o usuario
 POST http://localhost:3000/veiculo
@@ -27,13 +27,17 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-    "placa": "ABC1234",
-    "donoId": 1
+    "placa": "ACC1234"
 }
 
 ### List all vehicles
+GET http://localhost:3000/veiculo/todos
+Authorization: Bearer {{authToken}}
+
+### List all user vehicles
 GET http://localhost:3000/veiculo
 Authorization: Bearer {{authToken}}
+
 
 ### Create entry report
 POST http://localhost:3000/relatorio/entrada
@@ -59,4 +63,20 @@ Authorization: Bearer {{authToken}}
 ### Get parking lot status
 GET http://localhost:3000/estacionamento
 Authorization: Bearer {{authToken}}
+### Delete a vehicle by ID
+DELETE http://localhost:3000/veiculo/1
+Authorization: Bearer {{authToken}}
 
+### Update vehicle information
+PUT http://localhost:3000/veiculo/1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "placa": "XYZ5678",
+    "donoId": 1
+}
+
+### Get vehicle details by ID
+GET http://localhost:3000/veiculo/1
+Authorization: Bearer {{authToken}}

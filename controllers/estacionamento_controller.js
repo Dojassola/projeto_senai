@@ -1,5 +1,5 @@
 import Estacionamento from "../models/estacionamento.js";
-
+import Relatorio from "../models/relatorio.js";
 export const listEstacionamentos = async (req, res) => {
     try {
         const estacionamentos = await Estacionamento.findAll();
@@ -16,6 +16,20 @@ export const getVagasDisponiveis = async (req, res) => {
         if (!estacionamento) {
             return res.status(404).json({ message: 'Estacionamento não encontrado' });
         }
+
+        // Get count of active relatories (without saida)
+        const activeRelatories = await Relatorio.count({
+            where: {
+                data_saida: null
+            }
+        });
+
+        // Update vagas_ocupadas if there's a mismatch
+        if (activeRelatories !== estacionamento.vagas_ocupadas) {
+            estacionamento.vagas_ocupadas = activeRelatories;
+            await estacionamento.save();
+        }
+
         const vagasDisponiveis = estacionamento.total_vagas - estacionamento.vagas_ocupadas;
         res.status(200).json({ vagasDisponiveis });
     } catch (error) {

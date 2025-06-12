@@ -3,15 +3,28 @@ import Usuario from "../models/usuario.js";
 import Relatorio from "../models/relatorio.js";
 import { database } from "../database.js";
 export const listVeiculos = async (req, res) => {
-    const { id, usuarioFuncao } = req;
+    const { id } = req;
     try {
-        let where = {};
-        if (usuarioFuncao !== 'admin' && usuarioFuncao !== 'funcionario') {
-            where = { dono_id: id };
-        }
-
+        let where = {dono_id: id}
         const veiculos = await Veiculo.findAll({
             where,
+            include: [{
+                model: Usuario,
+                as: 'dono',
+                attributes: ['id', 'nome', 'cpf']
+            }]
+        });
+        
+        res.status(200).json(veiculos);
+    } catch (error) {
+        console.error('Erro ao listar veículos:', error);
+        res.status(500).json({ message: 'Erro ao buscar veículos', error });
+    }
+};
+
+export const listTodosVeiculos = async (req, res) => {
+    try {
+        const veiculos = await Veiculo.findAll({
             include: [{
                 model: Usuario,
                 as: 'dono',
@@ -46,25 +59,21 @@ export const searchVeiculo = async (req, res) => {
 
 export const createVeiculo = async (req, res) => {
     const { placa } = req.body;
-    const donoId = req.id; 
+    const donoId = req.id;
     const transaction = await database.transaction();
     try {
         if (!placa || !donoId) {
             return res.status(400).json({ message: 'Placa e dono_id são obrigatórios' });
         }
-
         const veiculoExistente = await Veiculo.findOne({ where: { placa } });
         if (veiculoExistente) {
             return res.status(400).json({ message: 'Já existe um veículo com esta placa' });
         }
-
         const dono = await Usuario.findByPk(donoId);
         if (!dono) {
             return res.status(404).json({ message: 'Dono não encontrado' });
         }
-
         const veiculo = await Veiculo.create({ placa, dono_id: donoId });
-
         const veiculoComDono = await Veiculo.findByPk(veiculo.id, {
             include: [{
                 model: Usuario,
@@ -180,5 +189,6 @@ export default {
     createVeiculo,
     updateVeiculo,
     deleteVeiculo,
-    createVeiculoById
+    createVeiculoById,
+    listTodosVeiculos
 };

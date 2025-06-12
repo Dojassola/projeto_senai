@@ -20,9 +20,6 @@ export const criarEntrada = async (req, res) => {
         }
 
         const estacionamento = req.estacionamento;
-        if (!estacionamento) {
-            return res.status(404).json({ message: 'Estacionamento não configurado' });
-        }
         if (estacionamento.vagas_ocupadas >= estacionamento.total_vagas) {
             return res.status(409).json({ message: 'Estacionamento lotado' });
         }
@@ -83,7 +80,11 @@ export const registrarSaida = async (req, res) => {
     const { id } = req.params;
     const transaction = await database.transaction();
     try {
-        const relatorio = await Relatorio.findByPk(id, {
+        const relatorio = await Relatorio.findOne({
+            where: {
+                veiculo_id: id,
+                saida: null
+            },
             include: [{
                 model: Veiculo,
                 as: 'veiculo',
@@ -92,16 +93,21 @@ export const registrarSaida = async (req, res) => {
         });
 
         if (!relatorio) {
-            return res.status(404).json({ message: 'Relatório não encontrado' });
+            return res.status(404).json({ message: 'Nenhuma entrada em aberto encontrada para este veículo' });
         }
-
-        if (relatorio.saida) {
-            return res.status(400).json({ message: 'Saída já registrada para este relatório' });
+        const estacionamento = req.estacionamento;
+        if (estacionamento.vagas_ocupadas <= 0) {
+            estacionamento.vagas_ocupadas = 0;
+            await estacionamento.save({ transaction });
+            return res.status(409).json({ message: 'Alguem passou a catraca sem passar pelo sistema' });
         }
 
         const tempoEstadia = new Date() - new Date(relatorio.entrada);
         relatorio.saida = new Date();
+        estacionamento.vagas_ocupadas -= 1;
+        await estacionamento.save({ transaction });
         await relatorio.save();
+
         await transaction.commit();
         res.status(200).json({
             ...relatorio.toJSON(),
