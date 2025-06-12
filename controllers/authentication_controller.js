@@ -10,16 +10,18 @@ export const cadastro = async (req, res) => {
     }
 
     try {
-        const usuarioExistente = await Usuario.findOne({ where: { cpf } });
+
+        const usuarioExistente = await Usuario.findOne({ where: { cpf: cpf } });
         if (usuarioExistente) {
             return res.status(409).json({ mensagem: 'Usuário já cadastrado' });
         }
 
         const senhaHash = await bcrypt.hash(senha, 10);
+        const cpfNumerico = cpf.replace(/\D/g, '');
         const novoUsuario = await Usuario.create({ 
             nome, 
             senha: senhaHash, 
-            cpf, 
+            cpf: cpfNumerico, 
             funcao 
         });
         
