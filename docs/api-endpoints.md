@@ -1,70 +1,70 @@
-# API Endpoints Documentation
+# Documentação de Endpoints da API
 
-## Authentication Endpoints
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| POST | `/auth/login` | User login | Public |
-| POST | `/auth/cadastro` | Register new user | Admin |
+## Endpoints de Autenticação
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| POST | `/auth/login` | Login de usuário | Público |
+| POST | `/auth/cadastro` | Registrar novo usuário | Admin |
 
-## User Endpoints
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/usuario` | List all users | Admin, Funcionario |
-| GET | `/usuario/:id` | Get specific user | Admin, Funcionario |
-| POST | `/usuario` | Create new user | Admin, Funcionario |
-| PUT | `/usuario/:id` | Update user | Admin, Funcionario, Self |
-| DELETE | `/usuario/:id` | Delete user | Admin, Funcionario, Self |
+## Endpoints de Usuário
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| GET | `/usuario` | Listar todos os usuários | Admin, Funcionário |
+| GET | `/usuario/:id` | Obter usuário específico | Admin, Funcionário |
+| POST | `/usuario` | Criar novo usuário | Admin, Funcionário |
+| PUT | `/usuario/:id` | Atualizar usuário | Admin, Funcionário, Próprio |
+| DELETE | `/usuario/:id` | Excluir usuário | Admin, Funcionário, Próprio |
 
-## Vehicle Endpoints
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/veiculo` | List user's vehicles | Authenticated |
-| GET | `/veiculo/:id` | Get specific vehicle | Admin, Funcionario |
-| POST | `/veiculo` | Register new vehicle | Admin, Funcionario |
-| PUT | `/veiculo/:id` | Update vehicle | Admin, Funcionario |
-| DELETE | `/veiculo/:id` | Delete vehicle | Admin, Funcionario |
+## Endpoints de Veículo
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| GET | `/veiculo` | Listar veículos do usuário | Autenticado |
+| GET | `/veiculo/:id` | Obter veículo específico | Admin, Funcionário |
+| POST | `/veiculo` | Registrar novo veículo | Admin, Funcionário |
+| PUT | `/veiculo/:id` | Atualizar veículo | Admin, Funcionário |
+| DELETE | `/veiculo/:id` | Excluir veículo | Admin, Funcionário |
 
-## Report Endpoints
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/relatorio` | List reports | Authenticated |
-| POST | `/relatorio/entrada` | Register vehicle entry | Admin, Funcionario |
-| PUT | `/relatorio/saida/:id` | Register vehicle exit | Admin, Funcionario |
-| DELETE | `/relatorio/:id` | Delete report | Admin |
-| PUT | `/relatorio/:id` | Update report | Admin |
+## Endpoints de Relatório
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| GET | `/relatorio` | Listar relatórios | Autenticado |
+| POST | `/relatorio/entrada` | Registrar entrada de veículo | Admin, Funcionário |
+| PUT | `/relatorio/saida/:id` | Registrar saída de veículo | Admin, Funcionário |
+| DELETE | `/relatorio/:id` | Excluir relatório | Admin |
+| PUT | `/relatorio/:id` | Atualizar relatório | Admin |
 
-## Parking Endpoints
-| Method | Endpoint | Description | Access |
-|--------|----------|-------------|---------|
-| GET | `/estacionamento` | List parking lots | Authenticated |
-| GET | `/estacionamento/vagas/:id` | Get available spots | Authenticated |
-| GET | `/estacionamento/:id` | Get specific parking lot | Admin, Funcionario |
-| POST | `/estacionamento` | Create parking lot | Admin |
-| PUT | `/estacionamento/:id` | Update parking spots | Admin, Funcionario |
+## Endpoints de Estacionamento
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| GET | `/estacionamento` | Listar estacionamentos | Autenticado |
+| GET | `/estacionamento/vagas/:id` | Obter vagas disponíveis | Autenticado |
+| GET | `/estacionamento/:id` | Obter estacionamento específico | Admin, Funcionário |
+| POST | `/estacionamento` | Criar estacionamento | Admin |
+| PUT | `/estacionamento/:id` | Atualizar vagas | Admin, Funcionário |
 
-## Special Functions
-| Endpoint | Description | Required Fields |
-|----------|-------------|-----------------|
-| `/auth/login` | Authentication | `cpf`, `senha` |
-| `/auth/cadastro` | User Registration | `nome`, `cpf`, `senha`, `funcao` |
-| `/relatorio/entrada` | Entry Registration | `veiculo_id` or `placa` |
-| `/relatorio/saida/:id` | Exit Registration | Vehicle ID in URL |
-| `/veiculo` | Vehicle Registration | `placa`, `donoId` |
-| `/estacionamento` | Parking Lot Creation | `vagas` |
+## Funções Especiais
+| Endpoint | Descrição | Campos Necessários |
+|----------|-----------|--------------------|
+| `/auth/login` | Autenticação | `cpf`, `senha` |
+| `/auth/cadastro` | Registro de Usuário | `nome`, `cpf`, `senha`, `funcao` |
+| `/relatorio/entrada` | Registro de Entrada | `veiculo_id` ou `placa` |
+| `/relatorio/saida/:id` | Registro de Saída | ID do veículo na URL |
+| `/veiculo` | Registro de Veículo | `placa`, `donoId` |
+| `/estacionamento` | Criação de Estacionamento | `vagas` |
 
-## Access Levels
-- **Admin**: Full system access
-- **Funcionario**: Can manage entries/exits and basic user operations
-- **Professor/Aluno**: Can only manage their own vehicles and view their reports
-- **Authenticated**: Basic access requiring valid JWT token
+## Níveis de Acesso
+- **Admin**: Acesso total ao sistema
+- **Funcionário**: Pode gerenciar entradas/saídas e operações básicas de usuários
+- **Professor/Aluno**: Pode gerenciar apenas seus próprios veículos e visualizar seus relatórios
+- **Autenticado**: Acesso básico requerendo token JWT válido
 
-## Response Codes
-- 200: Success
-- 201: Created
-- 204: No Content (successful deletion)
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 409: Conflict
-- 500: Internal Server Error
+## Códigos de Resposta
+- 200: Sucesso
+- 201: Criado
+- 204: Sem Conteúdo (exclusão bem-sucedida)
+- 400: Requisição Inválida
+- 401: Não Autorizado
+- 403: Proibido
+- 404: Não Encontrado
+- 409: Conflito
+- 500: Erro Interno do Servidor
