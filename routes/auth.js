@@ -1,7 +1,8 @@
 import { Router } from "express";
 import auth from "../controllers/authentication_controller.js";
+import { validateUsuario, validateLogin } from "../middlewares/validate.js";
 const router = Router();
 
-router.post('/login', auth.login);
-router.post('/cadastro', auth.cadastro);
+router.post('/login',validateLogin, auth.login);
+router.post('/cadastro',validateUsuario, auth.cadastro);
 export default router;

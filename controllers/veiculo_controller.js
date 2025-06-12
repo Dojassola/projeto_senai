@@ -173,11 +173,6 @@ export const deleteVeiculo = async (req, res) => {
             return res.status(404).json({ message: 'Veículo não encontrado' });
         }
 
-        await Relatorio.destroy({
-            where: { veiculo_id: id },
-            transaction
-        });
-
         await veiculo.destroy({ transaction });
         
         await transaction.commit();

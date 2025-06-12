@@ -118,6 +118,53 @@ export const registrarSaida = async (req, res) => {
         res.status(500).json({ message: 'Erro ao registrar saída', error });
     }
 };
+
+export const deletarRelatorio = async (req, res) => {
+    const { id } = req.params;
+    const transaction = await database.transaction();
+    try {
+        const relatorio = await Relatorio.findByPk(id);
+        if (!relatorio) {
+            return res.status(404).json({ message: 'Relatório não encontrado' });
+        }
+
+        await relatorio.destroy();
+        transaction.commit();
+        res.status(204).send();
+    } catch (error) {
+        await transaction.rollback();
+        console.error('Erro ao deletar relatório:', error);
+        res.status(500).json({ message: 'Erro ao deletar relatório', error });
+    }
+}
+
+export const atualizarRelatorio = async (req, res) => {
+    const { id } = req.params;
+    const { entrada, saida } = req.body;
+    const transaction = await database.transaction();
+    try {
+        const relatorio = await Relatorio.findByPk(id);
+        if (!relatorio) {
+            return res.status(404).json({ message: 'Relatório não encontrado' });
+        }
+
+        if (entrada) {
+            relatorio.entrada = new Date(entrada);
+        }
+        if (saida) {
+            relatorio.saida = new Date(saida);
+        }
+
+        await relatorio.save();
+        await transaction.commit();
+        res.status(200).json(relatorio);
+    } catch (error) {
+        await transaction.rollback();
+        console.error('Erro ao atualizar relatório:', error);
+        res.status(500).json({ message: 'Erro ao atualizar relatório', error });
+    }
+}
+
 export const listarRelatorios = async (req, res) => {
     const usuarioId = req.id;
     if (!usuarioId) {
@@ -175,5 +222,7 @@ export default {
     registrarSaida,
     listarRelatorios,
     criarEntradaPorPlaca,
-    listarTodosOsRelatorios
+    listarTodosOsRelatorios,
+    deletarRelatorio,
+    atualizarRelatorio
 };

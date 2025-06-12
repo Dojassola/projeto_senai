@@ -22,14 +22,55 @@ export const validateUsuario = [
         .isLength({ min: 3 })
         .withMessage('Nome deve ter no mínimo 3 caracteres'),
     check('cpf')
-        .matches(/^\d{11}$/)
-        .withMessage('CPF deve conter 11 dígitos'),
+        .custom((value) => {
+            const cpf = value.replace(/\D/g, '');
+            if (cpf.length !== 11) {
+                throw new Error('CPF deve conter 11 dígitos');
+            }
+            let sum = 0;
+            let remainder;
+
+            for (let i = 1; i <= 9; i++) {
+                sum += parseInt(cpf[i - 1]) * (11 - i);
+            }
+            remainder = (sum * 10) % 11;
+            if (remainder === 10 || remainder === 11) remainder = 0;
+            if (remainder !== parseInt(cpf[9])) {
+                throw new Error('CPF inválido');
+            }
+
+            sum = 0;
+            for (let i = 1; i <= 10; i++) {
+                sum += parseInt(cpf[i - 1]) * (12 - i);
+            }
+            remainder = (sum * 10) % 11;
+            if (remainder === 10 || remainder === 11) remainder = 0;
+            if (remainder !== parseInt(cpf[10])) {
+                throw new Error('CPF inválido');
+            }
+
+            return true;
+        })
+        .withMessage('CPF inválido'),
     check('senha')
         .isLength({ min: 6 })
         .withMessage('Senha deve ter no mínimo 6 caracteres'),
     check('funcao')
         .isIn(['aluno', 'professor', 'funcionario', 'admin'])
         .withMessage('Função inválida'),
+    handleValidationErrors
+];
+
+export const validateLogin = [
+    check('cpf')
+        .custom((value) => {
+            const cpf = value.replace(/\D/g, '');
+            if (cpf.length !== 11) {
+                throw new Error('CPF deve conter 11 dígitos');
+            }
+            return true;
+        })
+        .withMessage('CPF inválido'),
     handleValidationErrors
 ];
 

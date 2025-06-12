@@ -1,15 +1,5 @@
-### Registrar usuario
-POST http://localhost:3000/auth/cadastro
-Content-Type: application/json
 
-{
-    "nome": "admin",
-    "cpf": "11111111111",
-    "senha": "admin",
-    "funcao": "admin"
-}
-
-### Login
+### Login admin
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
@@ -17,6 +7,36 @@ Content-Type: application/json
     "cpf": "11111111111",
     "senha": "admin"
 }
+
+### Registrar usuario
+POST http://localhost:3000/auth/cadastro
+Content-Type: application/json
+
+{
+    "nome": "Usuario de teste",
+    "cpf": "896.210.900-08",
+    "senha": "aluno123",
+    "funcao": "aluno"
+}
+
+### Login aluno
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "cpf": "12345678901",
+    "senha": "password123"
+}
+
+### Login funcionario
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "cpf": "12345678902",
+    "senha": "password123"
+}
+
 
 ### adicionar o token abaixo para facilitar uso
 @authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZnVuY2FvIjoiYWRtaW4iLCJpYXQiOjE3NDk3NjQ1NjEsImV4cCI6MTc0OTc2ODE2MX0.rdK0D6GqL-ApcvfDzwR7DaBzh1Y7mBkgJce_XgDzjk8
@@ -79,4 +99,22 @@ Content-Type: application/json
 
 ### Get vehicle details by ID
 GET http://localhost:3000/veiculo/1
+Authorization: Bearer {{authToken}}
+
+### Delete a report by ID
+DELETE http://localhost:3000/relatorio/3
+Authorization: Bearer {{authToken}}
+
+### Update report information
+PUT http://localhost:3000/relatorio/1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "veiculo_id": 2,
+    "saida": "2023-10-01T12:00:00Z"
+}
+
+### Get report details by ID
+GET http://localhost:3000/relatorio/1
 Authorization: Bearer {{authToken}}
