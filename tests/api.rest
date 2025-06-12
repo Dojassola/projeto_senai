@@ -8,17 +8,12 @@ Content-Type: application/json
     "senha": "admin"
 }
 
-### Token de autenticação
-@authToken = <o token>
-
-
-### Registrar aluno
+### Registrar usuario
 POST http://localhost:3000/auth/cadastro
-Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-    "nome": "Usuario de testes",
+    "nome": "Usuario de teste",
     "cpf": "896.210.900-08",
     "senha": "aluno123",
     "funcao": "aluno"
@@ -27,6 +22,7 @@ Content-Type: application/json
 ### Login aluno
 POST http://localhost:3000/auth/login
 Content-Type: application/json
+
 {
     "cpf": "12345678901",
     "senha": "password123"
@@ -35,16 +31,17 @@ Content-Type: application/json
 ### Login funcionario
 POST http://localhost:3000/auth/login
 Content-Type: application/json
+
 {
     "cpf": "12345678902",
     "senha": "password123"
 }
 
-### listar todos os usuarios
-GET http://localhost:3000/usuario
-Authorization: Bearer {{authToken}}
 
-### criar um veiculo novo para o usuario
+### adicionar o token abaixo para facilitar uso
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZnVuY2FvIjoiYWRtaW4iLCJpYXQiOjE3NDk3NjQ1NjEsImV4cCI6MTc0OTc2ODE2MX0.rdK0D6GqL-ApcvfDzwR7DaBzh1Y7mBkgJce_XgDzjk8
+
+### Criar um veiculo novo para o usuario
 POST http://localhost:3000/veiculo
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
@@ -53,16 +50,16 @@ Content-Type: application/json
     "placa": "ACC1234"
 }
 
-### listar os veiculos de todos os usuarios
+### List all vehicles
 GET http://localhost:3000/veiculo/todos
 Authorization: Bearer {{authToken}}
 
-### listar os veiculos que o usuario logado tem
+### List all user vehicles
 GET http://localhost:3000/veiculo
 Authorization: Bearer {{authToken}}
 
 
-### criar um relatorio de entrada
+### Create entry report
 POST http://localhost:3000/relatorio/entrada
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
@@ -71,19 +68,19 @@ Content-Type: application/json
     "veiculo_id": 1
 }
 
-### ver todos os relatorios
+### List all reports
 GET http://localhost:3000/relatorio/todos
 Authorization: Bearer {{authToken}}
 
-### listar todos os relatorios que os veiculos do usuario tem
+### List reports by user
 GET http://localhost:3000/relatorio
 Authorization: Bearer {{authToken}}
 
-### registrar uma saida de veiculo
+### Adicionar uma saida
 PUT http://localhost:3000/relatorio/saida/1
 Authorization: Bearer {{authToken}}
 
-### status do estacionamento e quantidade de vagas
+### Get parking lot status
 GET http://localhost:3000/estacionamento
 Authorization: Bearer {{authToken}}
 ### Delete a vehicle by ID
