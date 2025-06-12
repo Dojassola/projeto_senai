@@ -17,6 +17,11 @@ export const searchUsuario = async (req, res) => {
         if (!usuario) {
             return res.status(404).json({ message: 'Usuário não encontrado' });
         }
+
+        if (usuario.funcao === 'funcionario') {
+            usuario.senha = undefined; 
+        }
+
         res.status(200).json(usuario);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao buscar usuário', error });
@@ -25,12 +30,23 @@ export const searchUsuario = async (req, res) => {
 
 export const createUsuario = async (req, res) => {
     const { nome, cpf, senha, funcao } = req.body;
+    if (!nome || !cpf || !senha || !funcao) {
+        return res.status(400).json({ 
+            message: 'Nome, CPF, senha e função são obrigatórios' 
+        });
+    }
 
     try {
         if (req.usuarioFuncao === 'funcionario' && 
             !['aluno', 'professor'].includes(funcao)) {
             return res.status(403).json({ 
                 message: 'Função inválida' 
+            });
+        }
+        const existingUsuario = await Usuario.findOne({ where: { cpf } });
+        if (existingUsuario) {
+            return res.status(400).json({ 
+                message: 'Já existe um usuário com este CPF' 
             });
         }
 
@@ -75,7 +91,14 @@ export const updateUsuario = async (req, res) => {
                 });
             }
         }
-
+        if (cpf) {
+            const existingUsuario = await Usuario.findOne({ where: { cpf, id: { [Op.ne]: id } } });
+            if (existingUsuario) {
+                return res.status(400).json({ 
+                    message: 'Já existe um usuário com este CPF' 
+                });
+            }
+        }
         usuario.nome = nome || usuario.nome;
         usuario.cpf = cpf || usuario.cpf;
         
@@ -103,6 +126,25 @@ export const updateUsuario = async (req, res) => {
 export const deleteUsuario = async (req, res) => {
     const { id } = req.params;
     try {
+        if( req.usuarioFuncao === 'funcionario' && 
+            (await Usuario.findByPk(id)).funcao === 'admin') {
+            return res.status(403).json({ 
+                message: 'Funcionários não podem deletar administradores' 
+            });
+        }
+        if (req.usuarioFuncao === 'admin' && 
+            (await Usuario.findByPk(id)).funcao === 'admin' && 
+            await Usuario.count({ where: { funcao: 'admin' } }) <= 1) {
+            return res.status(403).json({ 
+                message: 'Pelo menos um administrador deve existir' 
+            });
+        }
+        if(req.usuarioFuncao !== 'admin' && 
+           req.usuarioFuncao !== 'funcionario' && id !== req.id) {
+            return res.status(403).json({ 
+                message: 'Usuários comuns só podem deletar a si mesmos' 
+            });
+        }
         const usuario = await Usuario.findByPk(id);
         if (!usuario) {
             return res.status(404).json({ message: 'Usuário não encontrado' });
