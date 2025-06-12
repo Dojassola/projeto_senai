@@ -1,26 +1,50 @@
 import Relatorio from '../models/relatorio.js';
 import Veiculo from '../models/veiculo.js';
 import { database } from "../database.js";
-
+import Usuario from '../models/usuario.js';
 export const criarEntrada = async (req, res) => {
-    const { veiculo_id } = req.body;
+    const { veiculo_id, placa } = req.body;
     const transaction = await database.transaction();
     try {
-        const veiculo = await Veiculo.findByPk(veiculo_id);
+        let veiculo;
+        if (veiculo_id) {
+            veiculo = await Veiculo.findByPk(veiculo_id);
+        } else if (placa) {
+            veiculo = await Veiculo.findOne({ where: { placa } });
+        }else{
+            return res.status(400).json({ message: 'ID do veículo ou placa é obrigatório' });
+        }
+
         if (!veiculo) {
             return res.status(404).json({ message: 'Veículo não encontrado' });
         }
+
         const estacionamento = req.estacionamento;
         if (!estacionamento) {
             return res.status(404).json({ message: 'Estacionamento não configurado' });
         }
+
+        // Check if the vehicle is already in the parking lot
+        const relatorioAberto = await Relatorio.findOne({
+            where: {
+                veiculo_id: veiculo.id,
+                saida: null
+            }
+        });
+
+        if (relatorioAberto) {
+            return res.status(400).json({ message: 'Veículo já está no estacionamento' });
+        }
+
         const relatorio = await Relatorio.create({
-            veiculo_id,
+            veiculo_id: veiculo.id,
             entrada: new Date(),
         });
+
         estacionamento.vagas_ocupadas += 1;
         await estacionamento.save({ transaction });
         await transaction.commit();
+
         res.status(201).json({
             relatorio,
             estacionamento: {
@@ -121,9 +145,26 @@ export const listarRelatorios = async (req, res) => {
         res.status(500).json({ message: 'Erro ao listar relatórios', error });
     }
 };
+export const listarTodosOsRelatorios = async (req, res) => {
+    try {
+        const relatorios = await Relatorio.findAll({
+            include: [{
+                model: Veiculo,
+                as: 'veiculo',
+                attributes: ['placa']
+            }]
+        });
+
+        res.status(200).json(relatorios);
+    } catch (error) {
+        console.error('Erro ao listar todos os relatórios:', error);
+        res.status(500).json({ message: 'Erro ao listar relatórios', error });
+    }
+};
 export default {
     criarEntrada,
     registrarSaida,
     listarRelatorios,
-    criarEntradaPorPlaca
+    criarEntradaPorPlaca,
+    listarTodosOsRelatorios
 };

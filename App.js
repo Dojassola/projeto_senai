@@ -8,6 +8,8 @@ import veiculoRoutes from "./routes/veiculo.js";
 import relatorioRoutes from './routes/relatorio.js';
 import estacionamentoRoutes from './routes/estacionamento.js';
 import Estacionamento from './models/estacionamento.js';
+import authController from './controllers/authentication_controller.js';
+
 const app = express();
 
 // Middleware
@@ -41,3 +43,4 @@ try {
 }
 
 app.listen(3000, () => console.log("Servidor iniciado na porta 3000"));
+export default app;

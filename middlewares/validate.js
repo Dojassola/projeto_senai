@@ -1,5 +1,5 @@
 import { check, validationResult } from 'express-validator';
-
+import Estacionamento from '../models/estacionamento.js';
 export const validateEstacionamento = [
     check('vagas')
         .isInt({ min: 1 })

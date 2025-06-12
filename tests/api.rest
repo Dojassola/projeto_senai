@@ -1,0 +1,61 @@
+### Registrar usuario
+POST http://localhost:3000/auth/cadastro
+Content-Type: application/json
+
+{
+    "nome": "Test User",
+    "cpf": "12345678902",
+    "senha": "password123",
+    "funcao": "funcionario"
+}
+
+### Login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "cpf": "12345678902",
+    "senha": "password123"
+}
+
+### adicionar o token abaixo para facilitar uso
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZnVuY2FvIjoiZnVuY2lvbmFyaW8iLCJpYXQiOjE3NDk3NjA2MDgsImV4cCI6MTc0OTc2NDIwOH0.oQgZYbNsxyhk3jRba8RZQXTgup0zAHBj_BmDaI3uU-M
+
+### Criar um veiculo novo para o usuario
+POST http://localhost:3000/veiculo
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "placa": "ABC1234",
+    "donoId": 1
+}
+
+### List all vehicles
+GET http://localhost:3000/veiculo
+Authorization: Bearer {{authToken}}
+
+### Create entry report
+POST http://localhost:3000/relatorio/entrada
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "veiculo_id": 1
+}
+
+### List all reports
+GET http://localhost:3000/relatorio/todos
+Authorization: Bearer {{authToken}}
+
+### List reports by user
+GET http://localhost:3000/relatorio
+Authorization: Bearer {{authToken}}
+
+### Adicionar uma saida
+PUT http://localhost:3000/relatorio/saida/1
+Authorization: Bearer {{authToken}}
+
+### Get parking lot status
+GET http://localhost:3000/estacionamento
+Authorization: Bearer {{authToken}}

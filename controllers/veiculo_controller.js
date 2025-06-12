@@ -49,6 +49,12 @@ export const createVeiculo = async (req, res) => {
         if (!placa || !donoId) {
             return res.status(400).json({ message: 'Placa e dono_id são obrigatórios' });
         }
+
+        const veiculoExistente = await Veiculo.findOne({ where: { placa } });
+        if (veiculoExistente) {
+            return res.status(400).json({ message: 'Já existe um veículo com esta placa' });
+        }
+
         const dono = await Usuario.findByPk(donoId);
         if (!dono) {
             return res.status(404).json({ message: 'Dono não encontrado' });
