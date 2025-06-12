@@ -1,15 +1,33 @@
 import Usuario from "../models/usuario.js";
 import bcrypt from "bcrypt";
 import { database } from "../database.js";
+
 export const listUsuarios = async (req, res) => {
     try {
-        const usuarios = await Usuario.findAll();
+        const usuarios = await Usuario.findAll({
+            attributes: { exclude: ['senha'] } // Exclui a senha dos resultados
+        });
         res.status(200).json(usuarios);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao buscar usuários', error });
     }
 }
 
+export const listInfoUsuario = async (req, res) => {
+    const { id } = req;
+    try {
+        const usuario = await Usuario.findByPk(id, {
+            attributes: { exclude: ['senha'] }
+        });
+        if (!usuario) {
+            return res.status(404).json({ message: 'Usuário não encontrado' });
+        }
+
+        res.status(200).json(usuario);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar usuário', error });
+    }
+}
 export const searchUsuario = async (req, res) => {
     const { id } = req.params;
     try {
@@ -163,5 +181,6 @@ export default {
     searchUsuario,
     updateUsuario,
     deleteUsuario,
-    createUsuario
+    createUsuario,
+    listInfoUsuario
 };

@@ -79,4 +79,36 @@ export const login = async (req, res) => {
     }
 };
 
-export default { login, cadastro };
+export const changePassword = async (req, res) => {
+    const { id } = req.usuario;
+    const { senhaAtual, novaSenha } = req.body;
+
+    if (!senhaAtual || !novaSenha) {
+        return res.status(400).json({ mensagem: 'Senha atual e nova senha são obrigatórias' });
+    }
+
+    try {
+        const usuario = await Usuario.findByPk(id);
+        if (!usuario) {
+            return res.status(404).json({ mensagem: 'Usuário não encontrado' });
+        }
+
+        const senhaValida = await bcrypt.compare(senhaAtual, usuario.senha);
+        if (!senhaValida) {
+            return res.status(401).json({ mensagem: 'Senha atual incorreta' });
+        }
+
+        const novaSenhaHash = await bcrypt.hash(novaSenha, 10);
+        usuario.senha = novaSenhaHash;
+        await usuario.save();
+
+        res.status(200).json({ mensagem: 'Senha alterada com sucesso' });
+    } catch (error) {
+        console.error("Erro ao alterar senha:", error);
+        res.status(500).json({ mensagem: 'Erro ao alterar senha', error: error.message });
+    }
+};
+
+
+
+export default { login, cadastro, changePassword };
