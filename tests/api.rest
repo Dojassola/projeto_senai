@@ -64,11 +64,11 @@ Authorization: Bearer {{authToken}}
 GET http://localhost:3000/estacionamento
 Authorization: Bearer {{authToken}}
 ### Delete a vehicle by ID
-DELETE http://localhost:3000/veiculo/1
+DELETE http://localhost:3000/veiculo/3
 Authorization: Bearer {{authToken}}
 
 ### Update vehicle information
-PUT http://localhost:3000/veiculo/1
+PUT http://localhost:3000/veiculo/4
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 

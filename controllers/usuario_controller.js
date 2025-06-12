@@ -57,7 +57,7 @@ export const createUsuario = async (req, res) => {
             senha: hashSenha,
             funcao
         });
-        transaction.commit();
+        await transaction.commit();
         res.status(201).json({
             id: usuario.id,
             nome: usuario.nome,
@@ -112,7 +112,7 @@ export const updateUsuario = async (req, res) => {
         }
 
         await usuario.save();
-        transaction.commit();
+        await transaction.commit();
         res.status(200).json({
             id: usuario.id,
             nome: usuario.nome,

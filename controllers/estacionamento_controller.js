@@ -16,15 +16,11 @@ export const getVagasDisponiveis = async (req, res) => {
         if (!estacionamento) {
             return res.status(404).json({ message: 'Estacionamento não encontrado' });
         }
-
-        // Get count of active relatories (without saida)
         const activeRelatories = await Relatorio.count({
             where: {
                 data_saida: null
             }
         });
-
-        // Update vagas_ocupadas if there's a mismatch
         if (activeRelatories !== estacionamento.vagas_ocupadas) {
             estacionamento.vagas_ocupadas = activeRelatories;
             await estacionamento.save();

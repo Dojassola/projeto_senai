@@ -129,7 +129,7 @@ export const createVeiculoById = async (req, res) => {
 
 export const updateVeiculo = async (req, res) => {
     const { id } = req.params;
-    const { placa } = req.body;
+    const { placa, donoId } = req.body;
     const transaction = await database.transaction();
     try {
         const veiculo = await Veiculo.findByPk(id);
@@ -138,8 +138,15 @@ export const updateVeiculo = async (req, res) => {
         }
 
         veiculo.placa = placa;
+        if (donoId) {
+            const dono = await Usuario.findByPk(donoId);
+            if (!dono) {
+                return res.status(404).json({ message: 'Dono não encontrado' });
+            }
+            veiculo.dono_id = donoId;
+        }
         await veiculo.save();
-        transaction.commit();
+        await transaction.commit();
         const veiculoAtualizado = await Veiculo.findByPk(id, {
             include: [{
                 model: Usuario,
@@ -150,7 +157,7 @@ export const updateVeiculo = async (req, res) => {
 
         res.status(200).json(veiculoAtualizado);
     } catch (error) {
-        transaction.rollback();
+        await transaction.rollback();
         console.error('Erro ao atualizar veículo:', error);
         res.status(500).json({ message: 'Erro ao atualizar veículo', error });
     }
