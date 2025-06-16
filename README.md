@@ -92,4 +92,4 @@ Para uma lista completa de todos os endpoints, parâmetros necessários e nívei
 ## 👥 Níveis de Acesso
 - **Admin**: Acesso total ao sistema
 - **Funcionário**: Gerenciamento de entradas/saídas
-- **Professor/Aluno**: Gerenciamento dos próprios veículos
+- **Professor/Aluno**: Visualização
