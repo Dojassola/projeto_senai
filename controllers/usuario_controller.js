@@ -1,6 +1,7 @@
 import Usuario from "../models/usuario.js";
 import bcrypt from "bcrypt";
 import { database } from "../database.js";
+import { Op } from "sequelize";
 
 export const listUsuarios = async (req, res) => {
     try {
