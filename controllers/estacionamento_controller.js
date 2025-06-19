@@ -21,9 +21,11 @@ export const getVagasDisponiveis = async (req, res) => {
                 saida: null
             }
         });
-        if (activeRelatories !== estacionamento.vagas_ocupadas) {
-            estacionamento.vagas_ocupadas = activeRelatories;
-            await estacionamento.save();
+        if(activeRelatories != null){
+            if (activeRelatories !== estacionamento.vagas_ocupadas) {
+                estacionamento.vagas_ocupadas = activeRelatories;
+                await estacionamento.save();
+            }
         }
 
         const vagasDisponiveis = estacionamento.total_vagas - estacionamento.vagas_ocupadas;
