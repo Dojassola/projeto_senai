@@ -3,7 +3,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const database = new Sequelize(process.env.DATABASE_URL);
+const database = new Sequelize(process.env.DATABASE_URL,{
+  dialect: 'postgres',
+  protocol: 'postgres',
+  logging: false // opcional: remove logs de SQL
+});
 
 try {
     await database.authenticate();

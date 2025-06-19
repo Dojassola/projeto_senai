@@ -18,7 +18,7 @@ export const getVagasDisponiveis = async (req, res) => {
         }
         const activeRelatories = await Relatorio.count({
             where: {
-                data_saida: null
+                saida: null
             }
         });
         if (activeRelatories !== estacionamento.vagas_ocupadas) {
