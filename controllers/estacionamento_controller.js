@@ -28,7 +28,7 @@ export const getVagasDisponiveis = async (req, res) => {
             }
         }
 
-        const vagasDisponiveis = estacionamento.total_vagas - estacionamento.vagas_ocupadas;
+        const vagasDisponiveis = estacionamento.vagas - estacionamento.vagas_ocupadas;
         res.status(200).json({ vagasDisponiveis });
     } catch (error) {
         res.status(500).json({ message: 'Erro ao buscar vagas disponíveis', error });
