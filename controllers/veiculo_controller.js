@@ -92,10 +92,10 @@ export const createVeiculo = async (req, res) => {
 
 export const createVeiculoById = async (req, res) => {
     const { placa } = req.body;
-    const { donoId } = req.params;
+    const { id } = req.params;
     const transaction = await database.transaction();
     try {
-        if (!placa || !donoId) {
+        if (!placa || !id) {
             return res.status(400).json({ message: 'Placa e dono_id são obrigatórios' });
         }
 
@@ -104,12 +104,12 @@ export const createVeiculoById = async (req, res) => {
             return res.status(400).json({ message: 'Já existe um veículo com esta placa' });
         }
 
-        const dono = await Usuario.findByPk(donoId);
+        const dono = await Usuario.findByPk(id);
         if (!dono) {
             return res.status(404).json({ message: 'Dono não encontrado' });
         }
 
-        const veiculo = await Veiculo.create({ placa, dono_id: donoId });
+        const veiculo = await Veiculo.create({ placa, dono_id: id });
 
         const veiculoComDono = await Veiculo.findByPk(veiculo.id, {
             include: [{
