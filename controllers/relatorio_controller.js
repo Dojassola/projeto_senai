@@ -127,7 +127,9 @@ export const deletarRelatorio = async (req, res) => {
         if (!relatorio) {
             return res.status(404).json({ message: 'Relatório não encontrado' });
         }
-
+        if (relatorio.saida === null) {
+            return res.status(400).json({ message: 'Não é possível deletar um relatório com entrada aberta' });
+        }
         await relatorio.destroy();
         transaction.commit();
         res.status(204).send();
