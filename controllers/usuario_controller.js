@@ -126,6 +126,11 @@ export const updateUsuario = async (req, res) => {
             usuario.senha = await bcrypt.hash(senha, 10);
         }
         
+        if (funcao && req.usuarioFuncao !== 'admin') {
+            return res.status(403).json({ 
+                message: 'Apenas administradores podem alterar a função do usuário' 
+            });
+        }
         if (funcao) {
             usuario.funcao = funcao;
         }
